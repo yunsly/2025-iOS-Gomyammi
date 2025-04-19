@@ -146,9 +146,10 @@ struct OnboardingPage4: View {
                     .multilineTextAlignment(.center)
                 
                 Text("절대 욕심부리지 말라냥.\n목표를 쪼개는 연습을 하는거다!\n준비 됐으면 가보쟝!")
-                    .font(.body)
+                    .font(.pretendardRegular15)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
+                    .lineSpacing(5)
                 
                 Spacer()
                 
@@ -175,69 +176,81 @@ struct OnboardingPage5: View {
     var nextPage: () -> Void
     @State var mainGoal: String = ""
     @State var mainGoalmemo: String = ""
+    @FocusState var isFocused: Bool
     
     var body: some View {
-        VStack(spacing: 24) {
-            Spacer(minLength: 60)
-            
-            Text("이루고 싶은 목표가 있냥?")
-                .font(.pretendardMedium24)
-                .multilineTextAlignment(.center)
-            
-            Text("만다라트를 사용하기 위한 최죵 목표!\n작성 이후 수정도 가능하니 부담가지지 말라냥!")
-                .font(.pretendardRegular15)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-                .lineSpacing(5)
-            
-            Spacer()
-            
-            // 목표 입력 영역
-            VStack (spacing: 30) {
-                HStack {
-                    Text("Goal")
-                    Spacer()
-                        .frame(width: 10)
-                    TextField("메인 목표", text: $mainGoal)
-                        .font(.pretendardRegular14)
+        ZStack {
+            Color.clear
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    isFocused = false // 포커스 해제하여 키보드 내림
                 }
-                .font(.pretendardBold15)
-                .frame(height: 30)
-                .modifier(WhiteBox(paddingValue: 15, height: 40))
-                
-                VStack {
+            VStack {
+                VStack(spacing: 30) {
                     Spacer()
-                        .frame(height: 10)
-                    HStack {
-                        Text("memo (선택)")
-                            .font(.pretendardBold15)
+                    
+                    Text("이루고 싶은 목표가 있냥?")
+                        .font(.pretendardMedium24)
+                        .multilineTextAlignment(.center)
+                    
+                    Text("만다라트를 사용하기 위한 최죵 목표!\n작성 이후 수정도 가능하니 부담가지지 말라냥!")
+                        .font(.pretendardRegular15)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                        .lineSpacing(5)
+                    
+                    // 목표 입력 영역
+                    VStack (spacing: 30) {
+                        HStack {
+                            Text("Goal")
+                            Spacer()
+                                .frame(width: 10)
+                            TextField("메인 목표", text: $mainGoal)
+                                .font(.pretendardRegular14)
+                                .focused($isFocused)
+                        }
+                        .font(.pretendardBold15)
+                        .modifier(WhiteBox(paddingValue: 15, height: 40))
+                        
+                        VStack {
+                            Spacer()
+                                .frame(height: 10)
+                            HStack {
+                                Text("memo (선택)")
+                                    .font(.pretendardBold15)
+                                Spacer()
+                            }
+                            
+                            ZStack(alignment: .topLeading) {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color.white)
+                                    .frame(height: 130) // 하얀 박스의 높이에 맞게 조정
+                                
+                                TextEditor(text: $mainGoalmemo)
+                                    .font(.pretendardRegular14)
+                                    .padding(4)
+                                    .background(Color.clear)
+                                    .scrollContentBackground(.hidden)
+                                    .focused($isFocused)
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                        .modifier(WhiteBox(paddingValue: 10, height: 170))
                         Spacer()
                     }
+                    .padding()
                     
-                    ZStack(alignment: .topLeading) {
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.white)
-                            .frame(height: 130) // 하얀 박스의 높이에 맞게 조정
-                        
-                        TextEditor(text: $mainGoalmemo)
-                            .font(.pretendardRegular14)
-                            .padding(4)
-                            .background(Color.clear)
-                            .scrollContentBackground(.hidden)
-                    }
-                    .frame(maxWidth: .infinity)
+                    Spacer()
+                    
                 }
-                .modifier(WhiteBox(paddingValue: 10, height: 170))
+                // 다음 페이지 버튼
+                Button(action: nextPage) {
+                    Text("만다라트 만들기")
+                        .modifier(NextButton(buttonColor: "444343", textColor: "FFFFFF"))
+                }
+                .padding(.bottom, 40)
             }
-            
-            Spacer()
-            
-            // 다음 페이지 버튼
-            Button(action: nextPage) {
-                Text("만다라트 만들기")
-                    .modifier(NextButton(buttonColor: "444343", textColor: "FFFFFF"))
-            }
-            .padding(.bottom, 40)
+            .ignoresSafeArea(.keyboard)
         }
     }
 }

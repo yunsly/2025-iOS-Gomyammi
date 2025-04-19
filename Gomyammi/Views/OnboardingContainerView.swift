@@ -68,7 +68,7 @@ struct OnboardingContainerView: View {
                             }
                         }) {
                             Image(systemName: "chevron.left")
-                                .font(.system(size: 24, weight: .semibold))
+                                .font(.system(size: 20, weight: .semibold))
                                 .foregroundColor(.black)
                         }
                     }
