@@ -9,11 +9,12 @@ import SwiftUI
 
 struct WhiteBox: ViewModifier {
     var paddingValue: CGFloat
+    var height: CGFloat
     
     func body(content: Content) -> some View {
         content
-            .padding(.leading, paddingValue)
-            .frame(maxWidth: .infinity, maxHeight: 40, alignment: .leading)
+            .padding(.horizontal, paddingValue)
+            .frame(maxWidth: .infinity, maxHeight: height, alignment: .leading)
             .background(Color.white)
             .cornerRadius(10)
             .padding(.horizontal, 25)

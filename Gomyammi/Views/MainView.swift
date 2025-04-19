@@ -25,7 +25,8 @@ struct MainView: View {
                             .frame(width: 26, height: 23)
                         Text("\(mainGoal)")
                     }
-                    .modifier(WhiteBox(paddingValue: 15))
+                    .modifier(WhiteBox(paddingValue: 15, height: 40))
+                    
                     
                     MandalartView()
                         .environmentObject(navigationManager)
