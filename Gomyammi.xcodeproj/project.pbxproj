@@ -6,13 +6,31 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		27481CA02DB212CC0083A732 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 27481C9F2DB212CC0083A732 /* .gitignore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		27481C9F2DB212CC0083A732 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		27B321562DACD5B000F113DB /* Gomyammi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gomyammi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		27B321BC2DAD2DF700F113DB /* Exceptions for "Gomyammi" folder in "Gomyammi" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 27B321552DACD5B000F113DB /* Gomyammi */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		27B321582DACD5B000F113DB /* Gomyammi */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				27B321BC2DAD2DF700F113DB /* Exceptions for "Gomyammi" folder in "Gomyammi" target */,
+			);
 			path = Gomyammi;
 			sourceTree = "<group>";
 		};
@@ -32,6 +50,7 @@
 		27B3214D2DACD5B000F113DB = {
 			isa = PBXGroup;
 			children = (
+				27481C9F2DB212CC0083A732 /* .gitignore */,
 				27B321582DACD5B000F113DB /* Gomyammi */,
 				27B321572DACD5B000F113DB /* Products */,
 			);
@@ -109,6 +128,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27481CA02DB212CC0083A732 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,6 +275,7 @@
 				DEVELOPMENT_TEAM = H2WD8C55D7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Gomyammi/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -284,6 +305,7 @@
 				DEVELOPMENT_TEAM = H2WD8C55D7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Gomyammi/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
