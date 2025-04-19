@@ -49,9 +49,16 @@ struct MandalartView: View {
     // 셀 버튼 생성
     func createCell(for gridIndex: Int, cellIndex: Int) -> some View {
         NavigationLink(destination: GridDetailView(gridIndex: gridIndex, cellIndex: cellIndex), label: {
-            Text("(\(gridIndex), \(cellIndex))")
-                .frame(width: 38, height: 38)
-                .background((cellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && cellIndex != 4) ? Color(hex: "f5f5f5") : Color.white)
+            if gridIndex == 4 && cellIndex == 4 {
+                CatPawStamp(opacity: 0.7, size: 38, padding: 6)
+                    .frame(width: 38, height: 38)
+                    .background(Color.white)
+            }
+            else {
+                Text("(\(gridIndex), \(cellIndex))")
+                    .frame(width: 38, height: 38)
+                    .background((cellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && cellIndex != 4) ? Color(hex: "f5f5f5") : Color.white)
+            }
         })
 //        return Button {
 //            // 수정 페이지 이동

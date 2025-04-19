@@ -139,6 +139,8 @@ struct EditGoalView: View {
                     }
                 }
                 .modifier(BasicButton(buttonColor: "444343", buttonWidth: 246))
+                Spacer()
+                    .frame(height: 20)
             }
             .ignoresSafeArea(.keyboard)
         }
