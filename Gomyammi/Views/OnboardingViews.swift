@@ -238,7 +238,7 @@ struct OnboardingPage5: View {
                         .modifier(WhiteBox(paddingValue: 10, height: 170))
                         Spacer()
                     }
-                    .padding()
+                    .padding(.vertical)
                     
                     Spacer()
                     
