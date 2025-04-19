@@ -19,6 +19,7 @@ struct EditGoalView: View {
     @State private var selectedStatus: TaskStatus? = .planned
     @State private var completionDate: String = ""
     
+    @FocusState private var isFocused: Bool
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -26,6 +27,9 @@ struct EditGoalView: View {
             // 배경색 설정
             
             Color(hex: "f5f5f5").ignoresSafeArea()
+                .onTapGesture {
+                    isFocused = false // 포커스 해제하여 키보드 내림
+                }
             VStack (spacing: 20) {
                 Spacer()
                 
@@ -44,6 +48,7 @@ struct EditGoalView: View {
                         Spacer()
                             .frame(width: 35)
                         TextField("🐾", text: $emoji)
+                            .focused($isFocused)
                             .onChange(of: emoji) { oldValue, newValue in
                                 // 입력된 텍스트가 비어있지 않은 경우
                                 if !newValue.isEmpty {
@@ -72,6 +77,7 @@ struct EditGoalView: View {
                         Spacer()
                             .frame(width: 10)
                         TextField("디자인한테 달려가기", text: $miniGoal)
+                            .focused($isFocused)
                             .font(.pretendardRegular14)
                     }
                     .font(.pretendardBold15)
@@ -94,13 +100,12 @@ struct EditGoalView: View {
                             .frame(height: 130) // 하얀 박스의 높이에 맞게 조정
                         
                         TextEditor(text: $memo)
+                            .focused($isFocused)
                             .font(.pretendardRegular14)
                             .padding(4)
-                            .background(Color.clear)
-                            .scrollContentBackground(.hidden)
-                            .submitLabel(.done)
                     }
                     .frame(maxWidth: .infinity)
+                    
                 }
                 .modifier(WhiteBox(paddingValue: 10, height: 170))
                 
@@ -125,6 +130,7 @@ struct EditGoalView: View {
                 Spacer()
                 
                 Button {
+                    isFocused = false
                     dismiss()
                 } label: {
                     HStack {
