@@ -10,10 +10,16 @@ import SwiftData
 
 @main
 struct GomyammiApp: App {
-
+    // 온보딩 완료 여부를 저장
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
+    
     var body: some Scene {
         WindowGroup {
-            MainView()
+            if hasCompletedOnboarding {
+                MainView()
+            } else {
+                OnboardingContainerView(hasCompletedOnboarding: $hasCompletedOnboarding)
+            }
         }
     }
 }

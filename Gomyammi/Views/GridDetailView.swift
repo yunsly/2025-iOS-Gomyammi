@@ -22,12 +22,23 @@ struct GridDetailView: View {
             Color(hex: "f5f5f5").ignoresSafeArea()
             
             VStack (spacing: 30){
-                // 메인목표 바
-                HStack(spacing: 10) {
-                    Text("/ 선택한 그리드는 \(gridIndex)")
+                HStack (spacing: 15) {
+                    CustomBackButton()
+                        .padding(.leading, 10)
+                    HStack {
+                        Text("/ 선택한 그리드는 \(gridIndex)")
+                    }
+                    .padding(.horizontal, 15)
+                    .frame(maxWidth: .infinity, maxHeight: 40, alignment: .leading)
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .padding(.trailing, 25)
+                    .font(.pretendardSemiBold17)
                 }
-                .modifier(WhiteBox(paddingValue: 15, height: 40))
-                
+                .padding(.leading, 15)
+                .padding(.top, 5)
+                // 메인목표 바
+                                
                 // 중앙 3x3 그리드의 경우
                 if gridIndex == 4  {
                     
@@ -45,7 +56,6 @@ struct GridDetailView: View {
                                 else {
                                     Button {
                                         showingEditGoalView = true
-                                        print(showingEditGoalView)
                                     } label: {
                                         Text( cellIndex == 4 && gridIndex == 4 ? "" : "(\(gridIndex), \(cellIndex))")
                                             .frame(width: 114, height: 114)
@@ -80,6 +90,7 @@ struct GridDetailView: View {
                     .frame(height: 20)
                 
             }
+            .navigationBarHidden(true) // 기본 네비게이션 바 숨기기
             
             
         }

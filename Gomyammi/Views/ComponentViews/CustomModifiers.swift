@@ -24,8 +24,8 @@ struct WhiteBox: ViewModifier {
 }
 
 struct BasicButton: ViewModifier {
-    var buttonColor: String
-    var buttonWidth: CGFloat
+    var buttonColor : String
+    var buttonWidth : CGFloat
     
     func body(content: Content) -> some View {
         HStack {
@@ -34,9 +34,31 @@ struct BasicButton: ViewModifier {
                 .frame(maxWidth: buttonWidth, maxHeight: 48, alignment: .leading)
                 .background(Color(hex: buttonColor))
                 .cornerRadius(15)
+                .padding(.horizontal)
             Spacer()
 
         }
+        
+    }
+}
+
+struct NextButton: ViewModifier {
+    var buttonColor : String = ""
+    var textColor: String = ""
+    
+    func body(content: Content) -> some View {
+        content
+            .font(.pretendardMedium18)
+            .foregroundColor(Color(hex: textColor))
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color(hex: buttonColor))
+            .cornerRadius(15)
+            .overlay(
+                RoundedRectangle(cornerRadius: 15)
+                    .stroke(Color(hex: "E6E6E6"), lineWidth: 1)
+            )
+            .padding(.horizontal, 40)
         
     }
 }

@@ -98,6 +98,7 @@ struct EditGoalView: View {
                             .padding(4)
                             .background(Color.clear)
                             .scrollContentBackground(.hidden)
+                            .submitLabel(.done)
                     }
                     .frame(maxWidth: .infinity)
                 }

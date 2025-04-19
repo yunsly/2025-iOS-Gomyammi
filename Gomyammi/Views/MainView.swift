@@ -9,10 +9,9 @@ import SwiftUI
 
 struct MainView: View {
     @State private var mainGoal: String = "Challeng 2 완수하기"
-    @StateObject private var navigationManager = NavigationManager()
     
     var body: some View {
-        NavigationStack(path: $navigationManager.path) {
+        NavigationStack {
             ZStack {
                 // 배경색 설정
                 Color(hex: "f5f5f5").ignoresSafeArea()
@@ -29,7 +28,6 @@ struct MainView: View {
                     
                     
                     MandalartView()
-                        .environmentObject(navigationManager)
                     
                     // 통계 바
                     ZStack(alignment: .bottom) {
@@ -72,26 +70,10 @@ struct MainView: View {
                     .padding(.horizontal, 20)
                     .padding(.bottom, 40)
                     
-                    
                 }
-                
             }
         }
-        .navigationDestination(for: ViewType.self) { value in
-            switch value {
-            case .gridDetailView:
-                //                GridDetailView()
-                //                    .environmentObject(navigationManager)
-                EmptyView()
-            case .editGridView:
-                EmptyView()
-            case .mainView:
-                EmptyView()
-            case .onBoarding:
-                EmptyView()
-            }
-        }
-        
+            
     }
 }
 

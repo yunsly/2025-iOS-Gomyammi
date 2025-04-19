@@ -19,6 +19,7 @@ class NavigationManager: ObservableObject {
     
     // 화면 전환하기
     func navigate(to destination: ViewType) {
+        dump(destination)
         path.append(destination)
     }
     

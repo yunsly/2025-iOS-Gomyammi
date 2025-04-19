@@ -11,7 +11,6 @@ import SwiftUI
 
 // 만다라트 9x9 그리드 뷰
 struct MandalartView: View {
-    @EnvironmentObject var navigationManager: NavigationManager
     
     var body: some View {
         
@@ -55,20 +54,11 @@ struct MandalartView: View {
                     .background(Color.white)
             }
             else {
-                Text("(\(gridIndex), \(cellIndex))")
+                Text("")
                     .frame(width: 38, height: 38)
                     .background((cellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && cellIndex != 4) ? Color(hex: "f5f5f5") : Color.white)
             }
         })
-//        return Button {
-//            // 수정 페이지 이동
-//            navigationManager.navigate(to: .gridDetailView)
-//        } label: {
-//            Text("(\(gridIndex), \(cellIndex))")
-//                .frame(width: 38, height: 38)
-//                .background(Color.white)
-//        }
-//        .buttonStyle(PlainButtonStyle())
     }
 }
 

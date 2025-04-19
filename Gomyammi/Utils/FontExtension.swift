@@ -27,10 +27,12 @@ extension Font {
     // Medium
     static let pretendardMedium18: Font = .custom("Pretendard-Medium", size: 18)
     static let pretendardMedium16: Font = .custom("Pretendard-Medium", size: 16)
+    static let pretendardMedium24: Font = .custom("Pretendard-Medium", size: 24)
     
     // Regular
     
     static let pretendardRegular14: Font = .custom("Pretendard-Regular", size: 14)
+    static let pretendardRegular15: Font = .custom("Pretendard-Regular", size: 15)
     static let pretendardRegular16: Font = .custom("Pretendard-Regular", size: 16)
     
 }
