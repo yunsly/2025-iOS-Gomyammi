@@ -13,7 +13,7 @@ struct StatusButton: View {
     @Binding var completionDate: String
     
     // 버튼의 크기와 투명도를 제어하는 상태 변수
-    @State private var isPressed = false
+    @State private var isPressed = true
     
     var body: some View {
         VStack {
@@ -24,15 +24,12 @@ struct StatusButton: View {
                 .opacity(selectedStatus == status || selectedStatus == nil ? 1.0 : 0.6)
                 .onTapGesture {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                        // 완료 상태를 해제할 경우 완료 일자도 초기화
+                        if status != .completed  {
+                            completionDate = ""
+                        }
                         // 같은 버튼을 두 번 누르면 선택 해제
-                        if selectedStatus == status {
-                            selectedStatus = nil
-                            isPressed = false
-                            // 완료 상태를 해제할 경우 완료 일자도 초기화
-                            if status == .completed {
-                                completionDate = ""
-                            }
-                        } else {
+                        if selectedStatus != status {
                             selectedStatus = status
                             isPressed = true
                             // 완료 버튼을 누르면 현재 날짜 저장
@@ -56,7 +53,7 @@ struct StatusButton: View {
 struct StatusButtonsView: View {
     @Binding var selectedStatus: TaskStatus?
     @Binding var completionDate: String
-
+    
     var body: some View {
         HStack(spacing: 0) {
             ForEach(Array(TaskStatus.allCases.enumerated()), id: \.element.id) { index, status in

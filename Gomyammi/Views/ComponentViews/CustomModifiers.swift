@@ -23,3 +23,20 @@ struct WhiteBox: ViewModifier {
     }
 }
 
+struct BasicButton: ViewModifier {
+    var buttonColor: String
+    var buttonWidth: CGFloat
+    
+    func body(content: Content) -> some View {
+        HStack {
+            Spacer()
+            content
+                .frame(maxWidth: buttonWidth, maxHeight: 48, alignment: .leading)
+                .background(Color(hex: buttonColor))
+                .cornerRadius(15)
+            Spacer()
+
+        }
+        
+    }
+}

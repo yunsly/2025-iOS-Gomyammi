@@ -16,18 +16,22 @@ struct EditGoalView: View {
     @State private var miniGoal: String = ""
     @State private var memo: String = ""
     
-    @State private var selectedStatus: TaskStatus?
+    @State private var selectedStatus: TaskStatus? = .planned
     @State private var completionDate: String = ""
-     
+    
+    @Environment(\.dismiss) private var dismiss
+    
     var body: some View {
         ZStack {
             // 배경색 설정
             
             Color(hex: "f5f5f5").ignoresSafeArea()
             VStack (spacing: 20) {
+                Spacer()
+                
                 HStack {
                     Spacer()
-                        .frame(width: 16)
+                        .frame(width: 20)
                     Text("세부 목표 설정이다냥")
                         .font(.pretendardBold21)
                     Spacer()
@@ -39,8 +43,24 @@ struct EditGoalView: View {
                         Text("Emoji")
                         Spacer()
                             .frame(width: 35)
-                        TextField("🔥", text: $emoji)
-                            .font(.pretendardRegular14)
+                        TextField("🐾", text: $emoji)
+                            .onChange(of: emoji) { oldValue, newValue in
+                                // 입력된 텍스트가 비어있지 않은 경우
+                                if !newValue.isEmpty {
+                                    // 마지막 입력된 문자가 이모지인지 확인
+                                    if let lastChar = newValue.last, lastChar.isEmoji {
+                                        // 마지막 이모지만 남기기
+                                        emoji = String(lastChar)
+                                    } else {
+                                        // 이모지가 아니면 입력 무시
+                                        if let oldLastChar = oldValue.last, oldValue.count > 0 {
+                                            emoji = String(oldLastChar)
+                                        } else {
+                                            emoji = ""
+                                        }
+                                    }
+                                }
+                            }
                     }
                     .font(.pretendardBold15)
                     .frame(height: 30)
@@ -57,7 +77,7 @@ struct EditGoalView: View {
                     .font(.pretendardBold15)
                     .frame(height: 30)
                 }
-                .modifier(WhiteBox(paddingValue: 10, height: 90))
+                .modifier(WhiteBox(paddingValue: 15, height: 90))
                 
                 VStack {
                     Spacer()
@@ -68,11 +88,20 @@ struct EditGoalView: View {
                         Spacer()
                     }
                     
-                    TextField("", text: $memo)
-                        .font(.pretendardRegular14)
-                    Spacer()
+                    ZStack(alignment: .topLeading) {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color.white)
+                            .frame(height: 130) // 하얀 박스의 높이에 맞게 조정
+                        
+                        TextEditor(text: $memo)
+                            .font(.pretendardRegular14)
+                            .padding(4)
+                            .background(Color.clear)
+                            .scrollContentBackground(.hidden)
+                    }
+                    .frame(maxWidth: .infinity)
                 }
-                .modifier(WhiteBox(paddingValue: 10, height: 150))
+                .modifier(WhiteBox(paddingValue: 10, height: 170))
                 
                 HStack {
                     Text("완료 일자")
@@ -84,12 +113,37 @@ struct EditGoalView: View {
                 .font(.pretendardBold15)
                 .modifier(WhiteBox(paddingValue: 10, height: 40))
                 
-                Text("진척도")
-                    .font(.pretendardSemiBold13)
+                HStack {
+                    Text("진척도")
+                        .font(.pretendardSemiBold13)
+                        .padding(.leading, 30)
+                    Spacer()
+                }
                 StatusButtonsView(selectedStatus: $selectedStatus, completionDate: $completionDate)
-                            
+                
+                Spacer()
+                
+                Button {
+                    dismiss()
+                } label: {
+                    HStack {
+                        Spacer()
+                        Text("작성")
+                            .font(.pretendardMedium18)
+                            .foregroundColor(.white)
+                        Image("cat-paw5")
+                            .resizable()
+                            .frame(width: 28, height: 26)
+                            .colorInvert()
+                        Spacer()
+                    }
+                }
+                .modifier(BasicButton(buttonColor: "444343", buttonWidth: 246))
             }
+            .ignoresSafeArea(.keyboard)
         }
-        Text("\(gridIndex), \(cellIndex)")
+        
+        //Text("\(gridIndex), \(cellIndex)")
     }
+    
 }
