@@ -18,7 +18,8 @@ struct CatPawStamp: View {
         Image("cat-paw5")
             .resizable()
             .padding(padding)
-            .frame(width: size, height: size)
+            .scaledToFit()
+            .frame(width: size)
             .opacity(opacity)
     }
 }
@@ -30,7 +31,8 @@ struct RandomBigCatPawStamp: View {
     var body: some View {
         Image("cat-paw5")
             .resizable()
-            .frame(width: 109, height: 102)
+            .scaledToFit()
+            .frame(width: 109)
             .opacity(opacity)
     }
 }

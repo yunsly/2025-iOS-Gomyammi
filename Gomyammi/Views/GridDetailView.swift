@@ -13,8 +13,10 @@ struct GridDetailView: View {
     
     let gridIndex: Int
     let cellIndex: Int
-    @State private var showingEditGoalView: Bool = false
+    var task: MandalaTask? // 선택된 태스크
     
+    @State private var showingEditGoalView: Bool = false
+    @Environment(\.modelContext) private var modelContext
     
     var body: some View {
         ZStack {
@@ -22,11 +24,12 @@ struct GridDetailView: View {
             Color(hex: "f5f5f5").ignoresSafeArea()
             
             VStack (spacing: 30){
+                // 메인목표 바
                 HStack (spacing: 15) {
                     CustomBackButton()
                         .padding(.leading, 10)
                     HStack {
-                        Text("/ 선택한 그리드는 \(gridIndex)")
+                        Text("/ \(task?.parentTask?.miniGoal ?? "")")
                     }
                     .padding(.horizontal, 15)
                     .frame(maxWidth: .infinity, maxHeight: 40, alignment: .leading)
@@ -37,35 +40,32 @@ struct GridDetailView: View {
                 }
                 .padding(.leading, 15)
                 .padding(.top, 5)
-                // 메인목표 바
-                                
-                // 중앙 3x3 그리드의 경우
-                if gridIndex == 4  {
-                    
-                }
+                
                 VStack(spacing: 1) {
                     ForEach(0..<3) { row in
                         HStack(spacing: 1) {
                             ForEach(0..<3) { col in
-                                let cellIndex = row * 3 + col
+                                let detailCellIndex = row * 3 + col
                                 
                                 // 중앙 3x3 그리드의 경우
-                                if (cellIndex == 4 && gridIndex == 4) {
+                                if (detailCellIndex == 4 && gridIndex == 4) {
                                     CatPawStamp(opacity: 0.7, size: 114, padding: 15)
                                 }
                                 else {
                                     Button {
                                         showingEditGoalView = true
                                     } label: {
-                                        Text( cellIndex == 4 && gridIndex == 4 ? "" : "(\(gridIndex), \(cellIndex))")
-                                            .frame(width: 114, height: 114)
-                                            .background((cellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && cellIndex != 4) ? Color(hex: "f5f5f5") : Color.white)
+                                        cellContent(cellIndex: detailCellIndex)
                                     }
                                     .sheet(isPresented: $showingEditGoalView) {
-                                        EditGoalView(gridIndex: gridIndex, cellIndex: cellIndex)
-                                            .presentationDetents([.large])
-                                            .presentationCornerRadius(21)
-                                            .presentationDragIndicator(.visible)
+                                        EditGoalView(
+                                            gridIndex: gridIndex,
+                                            cellIndex: detailCellIndex,
+                                            task: task
+                                        )
+                                        .presentationDetents([.large])
+                                        .presentationCornerRadius(21)
+                                        .presentationDragIndicator(.visible)
                                     }
                                 }
                                 
@@ -84,7 +84,8 @@ struct GridDetailView: View {
                 
                 Image("cat-lying-on-the-box")
                     .resizable()
-                    .frame(width: 130, height: 130)
+                    .scaledToFit()
+                    .frame(width: 130)
                 
                 Spacer()
                     .frame(height: 20)
@@ -95,5 +96,27 @@ struct GridDetailView: View {
             
         }
         .background(Color.black)
+    }
+    
+    // 셀 내용 표시
+    private func cellContent(cellIndex: Int) -> some View {
+        ZStack {
+            Rectangle()
+                .fill((cellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && cellIndex != 4) ? Color(hex: "f5f5f5") : Color.white)
+                .frame(width: 114, height: 114)
+            
+            if let task = task {
+                if !task.emoji.isEmpty {
+                    Text(task.emoji)
+                        .font(.system(size: 40))
+                } else {
+                    Text("(\(gridIndex), \(cellIndex))")
+                        .foregroundColor(.gray)
+                }
+            } else {
+                Text("(\(gridIndex), \(cellIndex))")
+                    .foregroundColor(.gray)
+            }
+        }
     }
 }

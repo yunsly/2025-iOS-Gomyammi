@@ -11,6 +11,8 @@ struct EditGoalView: View {
     
     let gridIndex: Int
     let cellIndex: Int
+    var task: MandalaTask? // 수정 중인 태스크
+    @Environment(\.modelContext) private var modelContext
     
     @State private var emoji: String = ""
     @State private var miniGoal: String = ""
@@ -21,6 +23,7 @@ struct EditGoalView: View {
     
     @FocusState private var isFocused: Bool
     @Environment(\.dismiss) private var dismiss
+    
     
     var body: some View {
         ZStack {
@@ -140,7 +143,8 @@ struct EditGoalView: View {
                             .foregroundColor(.white)
                         Image("cat-paw5")
                             .resizable()
-                            .frame(width: 28, height: 26)
+                            .scaledToFit()
+                            .frame(width: 28)
                             .colorInvert()
                         Spacer()
                     }

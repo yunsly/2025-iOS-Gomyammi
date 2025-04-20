@@ -16,6 +16,19 @@ struct GomyammiApp: App {
     // 테스트 용
     @State private var hasCompletedOnboarding: Bool = false
     
+    // SwiftData ModelContainer
+    var modelContainer: ModelContainer = {
+        let schema = Schema([MandalaBoard.self, MandalaTask.self])
+        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        
+        do {
+            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+        } catch {
+            fatalError("Could not create ModelContainer: \(error)")
+        }
+    }()
+    
+    
     var body: some Scene {
         WindowGroup {
             if hasCompletedOnboarding {
@@ -24,5 +37,6 @@ struct GomyammiApp: App {
                 OnboardingContainerView(hasCompletedOnboarding: $hasCompletedOnboarding)
             }
         }
+        .modelContainer(modelContainer)
     }
 }

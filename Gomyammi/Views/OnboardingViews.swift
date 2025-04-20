@@ -178,6 +178,14 @@ struct OnboardingPage5: View {
     @State var mainGoalmemo: String = ""
     @FocusState var isFocused: Bool
     
+    // SwiftData 모델 컨텍스트 추가
+    @Environment(\.modelContext) private var modelContext
+    
+    // 버튼 활성화 상태 확인
+    var isButtonEnabled: Bool {
+        return !mainGoal.isEmpty
+    }
+    
     var body: some View {
         ZStack {
             Color.clear
@@ -244,13 +252,72 @@ struct OnboardingPage5: View {
                     
                 }
                 // 다음 페이지 버튼
-                Button(action: nextPage) {
+                Button(action: {
+                    nextPage()
+                    createNewMandalart()
+                }) {
                     Text("만다라트 만들기")
                         .modifier(NextButton(buttonColor: "444343", textColor: "FFFFFF"))
                 }
+                .disabled(!isButtonEnabled)
                 .padding(.bottom, 40)
+                
             }
             .ignoresSafeArea(.keyboard)
+        }
+    }
+    
+    // 만다라트 데이터 생성 함수
+    private func createNewMandalart() {
+        // 1. mainTask 생성
+        var mainTask = MandalaTask(emoji: "🐾", miniGoal: mainGoal, memo: mainGoalmemo, gridIndex: 4, cellIndex: 4)
+        mainTask.progress = .inProgress
+        
+        // 2. 8개의 1차 subTask 생성
+        let centerGridCellIndices = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        for (i, cellIdx) in centerGridCellIndices.enumerated() {
+            let subTask = MandalaTask(emoji: "", miniGoal: "", memo: "", gridIndex: 4, cellIndex: cellIdx)
+            subTask.progress = .planned
+            subTask.parentTask = mainTask
+            
+            if mainTask.subTasks == nil {
+                mainTask.subTasks = [subTask]
+            } else {
+                mainTask.subTasks?.append(subTask)
+            }
+            
+            // 3. 각 1차 서브태스크에 대해 8개의 2차 서브태스크 생성
+            // 해당 서브태스크 그리드의 셀 인덱스 (중앙 4를 제외한 0-8)
+            let subGridIndex = i > 3 ? i + 1 : i // 중앙 그리드(4)를 건너뛰기 위한 조정
+            
+            for subCellIdx in centerGridCellIndices {
+                let secondLevelTask = MandalaTask(emoji: "", miniGoal: "", memo: "", gridIndex: subGridIndex, cellIndex: subCellIdx)
+                secondLevelTask.progress = .planned
+                secondLevelTask.parentTask = subTask
+                
+                if subTask.subTasks == nil {
+                    subTask.subTasks = [secondLevelTask]
+                } else {
+                    subTask.subTasks?.append(secondLevelTask)
+                }
+            }
+        }
+        
+        
+        // 4. 만다라트 보드 생성
+        var mandalaBoard = MandalaBoard(mainGoal: mainGoal)
+        mandalaBoard.mainTask = mainTask
+        
+        
+        // 5. 모델 컨텍스트 저장
+        modelContext.insert(mandalaBoard)
+        
+        // 6. 변경 사항 저장 시도
+        do {
+            try modelContext.save()
+            print("Your new Mandalart board is created!")
+        } catch {
+            print("Error: \(error.localizedDescription)")
         }
     }
 }
