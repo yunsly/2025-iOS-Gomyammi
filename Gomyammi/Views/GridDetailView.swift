@@ -9,7 +9,6 @@ import SwiftUI
 
 
 struct GridDetailView: View {
-    @EnvironmentObject var navigationManager: NavigationManager
     
     let gridIndex: Int
     let cellIndex: Int
@@ -84,7 +83,8 @@ struct GridDetailView: View {
                 
                 Image("cat-lying-on-the-box")
                     .resizable()
-                    .frame(width: 130, height: 130)
+                    .scaledToFit()
+                    .frame(width: 130)
                 
                 Spacer()
                     .frame(height: 20)

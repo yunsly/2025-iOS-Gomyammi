@@ -140,7 +140,8 @@ struct EditGoalView: View {
                             .foregroundColor(.white)
                         Image("cat-paw5")
                             .resizable()
-                            .frame(width: 28, height: 26)
+                            .scaledToFit()
+                            .frame(width: 28)
                             .colorInvert()
                         Spacer()
                     }

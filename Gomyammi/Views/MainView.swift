@@ -21,7 +21,8 @@ struct MainView: View {
                     HStack(spacing: 10) {
                         Image("cat-paw5")
                             .resizable()
-                            .frame(width: 26, height: 23)
+                            .scaledToFit()
+                            .frame(width: 26)
                         Text("\(mainGoal)")
                     }
                     .modifier(WhiteBox(paddingValue: 15, height: 40))
