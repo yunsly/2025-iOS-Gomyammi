@@ -11,10 +11,10 @@ import SwiftData
 @main
 struct GomyammiApp: App {
     // 온보딩 완료 여부를 저장
-   // @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
+   @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
     
     // 테스트 용
-    @State private var hasCompletedOnboarding: Bool = false
+    //@State private var hasCompletedOnboarding: Bool = false
     
     var modelContainer: ModelContainer = {
         let schema = Schema([MandalartCell.self, MandalartBoard.self])

@@ -21,10 +21,12 @@ struct EditGoalView: View {
     
     @State private var selectedStatus: TaskStatus? = .planned
     @State private var completionDate: String = ""
+    @State private var hasToChangeCell: MandalartCell?
     
     @FocusState private var isFocused: Bool
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    
     
     var body: some View {
         ZStack {
@@ -70,9 +72,6 @@ struct EditGoalView: View {
                                             }
                                         }
                                     }
-                                }
-                                .onSubmit {
-                                    cell.emoji = emoji
                                 }
                         }
                         .font(.pretendardBold15)
@@ -135,16 +134,40 @@ struct EditGoalView: View {
                             .padding(.leading, 30)
                         Spacer()
                     }
-                    StatusButtonsView(selectedStatus: $selectedStatus, completionDate: $completionDate)
+                    StatusButtonsView(board: board, selectedStatus: $selectedStatus, completionDate: $completionDate)
                     
                     Spacer()
                     
                     Button {
-                        cell.emoji = emoji
-                        cell.title = miniGoal
-                        cell.memo = memo
-                        
-                        try? modelContext.save()
+                        // 명시적으로 cell 찾기
+                        if let updatedCell = board.findCell(gridIndex: gridIndex, cellIndex: cellIndex) {
+                            updatedCell.emoji = emoji
+                            updatedCell.title = miniGoal
+                            updatedCell.memo = memo
+                            updatedCell.progress = selectedStatus ?? .planned
+                            updatedCell.completionDate = completionDate
+                            
+                            // 메인셀 변경 시 쌍방 바인딩
+                            if gridIndex == 4 {
+                                if let hasToChangeCell = board.findCell(gridIndex: cellIndex, cellIndex: 4) {
+                                    hasToChangeCell.emoji = emoji
+                                    hasToChangeCell.title = miniGoal
+                                    hasToChangeCell.memo = memo
+                                    hasToChangeCell.progress = selectedStatus ?? .planned
+                                    hasToChangeCell.completionDate = completionDate
+                                }
+                            } else if cellIndex == 4 {
+                                if let hasToChangeCell = board.findCell(gridIndex: 4, cellIndex: gridIndex) {
+                                    hasToChangeCell.emoji = emoji
+                                    hasToChangeCell.title = miniGoal
+                                    hasToChangeCell.memo = memo
+                                    hasToChangeCell.progress = selectedStatus ?? .planned
+                                    hasToChangeCell.completionDate = completionDate
+                                }
+                            }
+                            // 변경 알림
+                            try? modelContext.save()
+                        }
                         
                         isFocused = false
                         dismiss()
@@ -169,14 +192,21 @@ struct EditGoalView: View {
                 }
                 .ignoresSafeArea(.keyboard)
                 .onAppear {
-                    // 처음 로드될 때 cell의 값으로 State 변수들 초기화
                     emoji = cell.emoji
                     miniGoal = cell.title
                     memo = cell.memo ?? ""
-                    //selectedStatus = cell.progress
                 }
+                
+            } else {
+                Text("셀을 찾을 수 없습니다")
+                    .font(.pretendardBold18)
+                    .foregroundColor(.red)
             }
             
         }
+
     }
+        
+        
 }
+    

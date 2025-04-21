@@ -16,6 +16,9 @@ struct GridDetailView: View {
     let cellIndex: Int
     
     @State private var showingEditGoalView: Bool = false
+    @State private var selectedCell: CellIdentifier? = nil
+    
+    @Environment(\.modelContext) private var modelContext
     
     var body: some View {
         ZStack {
@@ -53,15 +56,24 @@ struct GridDetailView: View {
                                     }
                                     .frame(width: 114, height: 114)
                                 } else {
+                                    
                                     Button {
-                                        showingEditGoalView = true
+                                        selectedCell = CellIdentifier(gridIndex: gridIndex, cellIndex: calculatedCellIndex)
+                                        
                                     } label: {
-                                        // 중앙 3x3 그리드의 경우)
                                         if let cell = board.findCell(gridIndex: gridIndex, cellIndex: calculatedCellIndex) {
-                                            Text("\(cell.emoji)\n\(cell.title)")
-                                                .frame(width: 114, height: 114)
-                                                .multilineTextAlignment(.center)
-                                                .background((calculatedCellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && calculatedCellIndex != 4) ? Color(hex: "f5f5f5") : Color.white)
+                                            VStack {
+                                                Text("\(cell.emoji)")
+                                                    .font(.largeTitle)
+                                                    .padding(.bottom, 3)
+                                                Text("\(cell.title)")
+                                                    .font(.pretendardSemiBold17)
+                                                    .foregroundColor(.black)
+                                                
+                                            }
+                                            .padding()
+                                            .frame(width: 114, height: 114)
+                                            .background((calculatedCellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && calculatedCellIndex != 4) ? Color(hex: "f5f5f5") : Color.white)
                                         } else {
                                             Text("")
                                                 .frame(width: 114, height: 114)
@@ -70,13 +82,13 @@ struct GridDetailView: View {
                                         }
                                         
                                     }
-                                    .sheet(isPresented: $showingEditGoalView) {
-                                        EditGoalView(board: board, gridIndex: gridIndex, cellIndex: cellIndex)
+                                    .sheet(item: $selectedCell) { CellIdentifier in
+                                        EditGoalView(board: board, gridIndex: CellIdentifier.gridIndex, cellIndex: CellIdentifier.cellIndex)
                                             .presentationDetents([.large])
                                             .presentationCornerRadius(21)
                                             .presentationDragIndicator(.visible)
-                                            
                                     }
+
                                     
                                 }
                                 
@@ -100,6 +112,7 @@ struct GridDetailView: View {
                 
                 Spacer()
                     .frame(height: 20)
+                
                 
             }
             .navigationBarHidden(true) // 기본 네비게이션 바 숨기기

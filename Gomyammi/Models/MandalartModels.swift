@@ -22,7 +22,22 @@ class MandalartBoard {
     }
     
     func findCell(gridIndex: Int, cellIndex: Int) -> MandalartCell? {
-        return cells.first { $0.gridIndex == gridIndex && $0.cellIndex == cellIndex }
+        if gridIndex == 4 {
+                return cells.first { $0.cellIndex == cellIndex }
+            }
+            // 서브셀을 찾는 경우 - 서브셀은 메인 셀의 subcells 배열에 있음
+            else {
+                // 모든 메인 셀을 검색
+                for mainCell in cells {
+                    // 각 메인 셀의 서브셀 중에서 gridIndex와 cellIndex가 일치하는 것 찾기
+                    if let foundSubcell = mainCell.subcells.first(where: {
+                        $0.gridIndex == gridIndex && $0.cellIndex == cellIndex
+                    }) {
+                        return foundSubcell
+                    }
+                }
+                return nil
+            }
     }
 }
 
@@ -48,7 +63,7 @@ class MandalartCell {
     // 셀 위치
     var gridIndex: Int
     var cellIndex: Int
-
+    
     init(emoji: String, title: String, hasSubcells: Bool, gridIndex: Int, cellIndex: Int) {
         self.emoji = emoji
         self.title = title

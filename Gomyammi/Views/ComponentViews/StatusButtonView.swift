@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct StatusButton: View {
+    
     let status: TaskStatus
     @Binding var selectedStatus: TaskStatus?
     @Binding var completionDate: String
@@ -53,8 +54,10 @@ struct StatusButton: View {
 }
 
 struct StatusButtonsView: View {
+    @Bindable var board: MandalartBoard
     @Binding var selectedStatus: TaskStatus?
     @Binding var completionDate: String
+    
     
     var body: some View {
         HStack(spacing: 0) {
