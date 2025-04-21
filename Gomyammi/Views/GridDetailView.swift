@@ -91,7 +91,7 @@ struct GridDetailView: View {
                                         if let markedCell = board.findCell(gridIndex: gridIndex, cellIndex: calculatedCellIndex) {
                                             if markedCell.progress == .completed {
                                                 VStack {
-                                                    RandomCatPawStamp(opacity: 0.2, padding: 15)
+                                                    RandomCatPawStamp(opacity: 0.2, padding: 15, isBig: true)
                                                 }
                                                 .frame(width: 114, height: 114)
                                             }

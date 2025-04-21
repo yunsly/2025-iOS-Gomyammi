@@ -62,9 +62,18 @@ struct MandalartView: View {
             }
             else {
                 if let cell = board.findCell(gridIndex: gridIndex, cellIndex: cellIndex) {
-                    Text(cell.emoji)
-                        .frame(width: 38, height: 38)
-                        .background((cellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && cellIndex != 4) ? Color(hex: "f5f5f5") : Color.white)
+                    ZStack {
+                        
+                        Text(cell.emoji)
+                            .frame(width: 38, height: 38)
+                            .background((cellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && cellIndex != 4) ? Color(hex: "f5f5f5") : Color.white)
+                        if cell.progress == .completed {
+                            VStack {
+                                RandomCatPawStamp(opacity: 0.2, padding: 6, isBig: false)
+                            }
+                            .frame(width: 38, height: 38)
+                        }
+                    }
                 } else {
                     Text("")
                         .frame(width: 38, height: 38)
