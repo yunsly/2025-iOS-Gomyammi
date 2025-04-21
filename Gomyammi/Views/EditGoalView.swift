@@ -195,6 +195,8 @@ struct EditGoalView: View {
                     emoji = cell.emoji
                     miniGoal = cell.title
                     memo = cell.memo ?? ""
+                    completionDate = cell.completionDate ?? ""
+                    selectedStatus = cell.progress
                 }
                 
             } else {
