@@ -10,6 +10,8 @@ import SwiftUI
 
 
 struct CatPawStamp: View {
+    @State private var isImageLoaded = false
+    
     var opacity: Double
     var size: CGFloat
     var padding: CGFloat
@@ -17,10 +19,11 @@ struct CatPawStamp: View {
     var body: some View {
         Image("cat-paw5")
             .resizable()
-            .padding(padding)
             .scaledToFit()
-            .frame(width: size)
             .opacity(opacity)
+            .frame(width: size)
+            .padding(padding)
+
     }
 }
 

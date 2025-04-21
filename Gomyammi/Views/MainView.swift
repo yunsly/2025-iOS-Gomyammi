@@ -6,12 +6,20 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct MainView: View {
-    @State private var mainGoal: String = "Challeng 2 완수하기"
+    @Query private var boards: [MandalartBoard]
+    @State private var activeBoard: MandalartBoard?
+    
+    
+    // mainGoal 수정모드
+    @State private var isEditing = false
+    @State private var editedGoal = ""
     
     var body: some View {
         NavigationStack {
+            
             ZStack {
                 // 배경색 설정
                 Color(hex: "f5f5f5").ignoresSafeArea()
@@ -23,12 +31,29 @@ struct MainView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 26)
-                        Text("\(mainGoal)")
+                        if let board = activeBoard {
+                            if isEditing {
+                                TextField("", text: $editedGoal)
+                                    .onAppear {
+                                        editedGoal = board.mainGoal
+                                    }
+                                    .onSubmit {
+                                        board.mainGoal = editedGoal
+                                        isEditing = false
+                                    }
+                            } else {
+                                Text("\(board.mainGoal)")
+                                    .onTapGesture {
+                                        isEditing = true
+                                    }
+                            }
+                        }
                     }
                     .modifier(WhiteBox(paddingValue: 15, height: 40))
                     
                     
-                    MandalartView()
+                    
+                    MandalartView(board: activeBoard ?? MandalartBoard(mainGoal: "load Error"))
                     
                     // 통계 바
                     ZStack(alignment: .bottom) {
@@ -72,9 +97,22 @@ struct MainView: View {
                     .padding(.bottom, 40)
                     
                 }
+                .onAppear {
+                    loadActiveBoard()
+                }
             }
         }
-            
+        
+    }
+    
+    private func loadActiveBoard() {
+        // UserDefaults에서 보드 정보 불러오기
+        if let mainGoal = UserDefaults.standard.string(forKey: "myNewMandalartBoard") {
+            // 제목으로 보드 찾기
+            activeBoard = boards.first(where: { $0.mainGoal == mainGoal })
+        } else if let firstBoard = boards.first {
+            activeBoard = firstBoard
+        }
     }
 }
 

@@ -11,6 +11,8 @@ struct StatusButton: View {
     let status: TaskStatus
     @Binding var selectedStatus: TaskStatus?
     @Binding var completionDate: String
+
+
     
     // 버튼의 크기와 투명도를 제어하는 상태 변수
     @State private var isPressed = true

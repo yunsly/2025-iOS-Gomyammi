@@ -11,10 +11,13 @@ import SwiftUI
 
 // 만다라트 9x9 그리드 뷰
 struct MandalartView: View {
+    // 전달받은 board
+    @Bindable var board: MandalartBoard
+    
     
     var body: some View {
-        
-            VStack(spacing: 1) {
+        VStack(spacing: 1) {
+            if board.cells.count == 9 {
                 ForEach(0..<3) { row in
                     HStack(spacing: 1) {
                         ForEach(0..<3) { col in
@@ -23,10 +26,13 @@ struct MandalartView: View {
                         }
                     }
                 }
+            } else {
+                ProgressView()
             }
-            .background(Color.gray.opacity(0.2))
-            .cornerRadius(10)
-            .padding()
+        }
+        .background(Color.gray.opacity(0.2))
+        .cornerRadius(10)
+        .padding()
         
     }
     
@@ -38,7 +44,7 @@ struct MandalartView: View {
                     ForEach(0..<3) { col in
                         let cellIndex = row * 3 + col
                         createCell(for: gridIndex, cellIndex: cellIndex)
-
+                        
                     }
                 }
             }
@@ -47,19 +53,29 @@ struct MandalartView: View {
     
     // 셀 버튼 생성
     func createCell(for gridIndex: Int, cellIndex: Int) -> some View {
-        NavigationLink(destination: GridDetailView(gridIndex: gridIndex, cellIndex: cellIndex), label: {
+        NavigationLink(destination: GridDetailView(board: board, gridIndex: gridIndex, cellIndex: cellIndex), label: {
+            // 중앙 발자국
             if gridIndex == 4 && cellIndex == 4 {
                 CatPawStamp(opacity: 0.7, size: 38, padding: 6)
                     .frame(width: 38, height: 38)
                     .background(Color.white)
             }
             else {
-                Text("")
-                    .frame(width: 38, height: 38)
-                    .background((cellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && cellIndex != 4) ? Color(hex: "f5f5f5") : Color.white)
+                if let cell = board.findCell(gridIndex: gridIndex, cellIndex: cellIndex) {
+                    Text(cell.emoji)
+                        .frame(width: 38, height: 38)
+                        .background((cellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && cellIndex != 4) ? Color(hex: "f5f5f5") : Color.white)
+                } else {
+                    Text("")
+                        .frame(width: 38, height: 38)
+                        .background((cellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && cellIndex != 4) ? Color(hex: "f5f5f5") : Color.white)
+                }
+                
+                
             }
         })
     }
+
 }
 
 

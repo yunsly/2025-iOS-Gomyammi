@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 // 첫 번째 온보딩 화면 - 고먐미 소개
 struct OnboardingPage1: View {
@@ -178,6 +179,9 @@ struct OnboardingPage5: View {
     @State var mainGoalmemo: String = ""
     @FocusState var isFocused: Bool
     
+    @Environment(\.modelContext) private var modelContext
+    @State private var createdBoardId: PersistentIdentifier? = nil
+    
     var body: some View {
         ZStack {
             Color.clear
@@ -244,13 +248,41 @@ struct OnboardingPage5: View {
                     
                 }
                 // 다음 페이지 버튼
-                Button(action: nextPage) {
+                Button(action: {
+                    createNewMandalartBoard()
+                    nextPage()
+                }) {
                     Text("만다라트 만들기")
-                        .modifier(NextButton(buttonColor: "444343", textColor: "FFFFFF"))
+                        .modifier(NextButton(buttonColor: mainGoal.isEmpty ? "D1D1D1" : "444343", textColor:  mainGoal.isEmpty ? "8A8484" : "FFFFFF"))
                 }
                 .padding(.bottom, 40)
+                .disabled(mainGoal.isEmpty)
             }
             .ignoresSafeArea(.keyboard)
         }
+    }
+    
+    func createNewMandalartBoard() {
+        let newBoard = MandalartBoard(mainGoal: mainGoal)
+        
+        // 메인 3x3 그리드 생성
+        for i in 0..<9 {
+            
+            let mainCell = MandalartCell(emoji: "", title: "", hasSubcells: true, gridIndex: 4, cellIndex: i)
+            newBoard.cells.append(mainCell)
+            
+            // 서브셀 생성 및 관계 설정 (중앙 제외)
+            for j in 0..<9 where i != 4 {
+                let subCell = MandalartCell(emoji: "", title: "", hasSubcells: false, gridIndex: i, cellIndex: j)
+                subCell.parentCell = mainCell  // 부모-자식 관계 설정
+                mainCell.subcells.append(subCell)
+            }
+            
+        }
+        
+        modelContext.insert(newBoard)
+        
+        // UserDefaults에 현재 활성 보드의 제목 저장
+        UserDefaults.standard.set(mainGoal, forKey: "myNewMandalartBoard")
     }
 }
