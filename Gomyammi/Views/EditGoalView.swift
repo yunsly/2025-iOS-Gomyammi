@@ -185,7 +185,8 @@ struct EditGoalView: View {
                             Spacer()
                         }
                     }
-                    .modifier(BasicButton(buttonColor: "444343", buttonWidth: 246))
+                    .modifier(BasicButton(buttonColor: emoji.isEmpty || miniGoal.isEmpty ? "D1D1D1":"444343", buttonWidth: 246))
+                    .disabled(emoji.isEmpty || miniGoal.isEmpty)
                     
                     Spacer()
                         .frame(height: 20)
