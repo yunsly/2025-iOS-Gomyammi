@@ -54,37 +54,48 @@ struct MandalartView: View {
     // 셀 버튼 생성
     func createCell(for gridIndex: Int, cellIndex: Int) -> some View {
         NavigationLink(destination: GridDetailView(board: board, gridIndex: gridIndex, cellIndex: cellIndex), label: {
-            // 중앙 발자국
-            if gridIndex == 4 && cellIndex == 4 {
-                CatPawStamp(opacity: 0.7, size: 38, padding: 6)
+            ZStack {
+                // 1. 배경
+                Rectangle()
+                    .fill((cellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && cellIndex != 4) ? Color(hex: "f5f5f5") : Color.white)
                     .frame(width: 38, height: 38)
-                    .background(Color.white)
-            }
-            else {
-                if let cell = board.findCell(gridIndex: gridIndex, cellIndex: cellIndex) {
-                    ZStack {
-                        
-                        Text(cell.emoji)
-                            .frame(width: 38, height: 38)
-                            .background((cellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && cellIndex != 4) ? Color(hex: "f5f5f5") : Color.white)
+                
+                // 중앙 발자국
+                if gridIndex == 4 && cellIndex == 4 {
+                    CatPawStamp(opacity: 0.7, size: 38, padding: 6)
+                        .frame(width: 38, height: 38)
+                        .background(Color.white)
+                }
+                // 그 외 컨텐츠
+                else {
+                    
+                    if let cell = board.findCell(gridIndex: gridIndex, cellIndex: cellIndex) {
                         if cell.progress == .completed {
                             VStack {
                                 RandomCatPawStamp(opacity: 0.2, padding: 6, isBig: false)
                             }
                             .frame(width: 38, height: 38)
                         }
+                        else {
+                            Text(cell.emoji)
+                                .frame(width: 38, height: 38)
+                        }
+                        
+                        
+                    } else {
+                        Text("")
+                            .frame(width: 38, height: 38)
                     }
-                } else {
-                    Text("")
-                        .frame(width: 38, height: 38)
-                        .background((cellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && cellIndex != 4) ? Color(hex: "f5f5f5") : Color.white)
+                    
+                    
                 }
                 
-                
             }
+            
+            
         })
     }
-
+    
 }
 
 

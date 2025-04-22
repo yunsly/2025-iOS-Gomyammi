@@ -111,6 +111,12 @@ struct MainView: View {
                     }
                 }
                 .scrollDisabled(true)
+                .onAppear {
+                    loadActiveBoard()
+                }
+                .onChange(of: activeBoard) { _, _ in
+                    updateStatistics()
+                }
             }
             .safeAreaPadding(.top)
             .background(Color(hex: "f5f5f5")) // 배경색 지정
@@ -125,13 +131,10 @@ struct MainView: View {
                     }
                 }
             }
+            
         }
-        .onAppear {
-            loadActiveBoard()
-        }
-        .onChange(of: activeBoard) { _, _ in
-            updateStatistics()
-        }
+        
+        
     }
     
     // 전체 셀 개수와 각 상태별 개수를 계산하는 함수

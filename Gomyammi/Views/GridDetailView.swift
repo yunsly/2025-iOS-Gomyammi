@@ -55,6 +55,25 @@ struct GridDetailView: View {
                                     .frame(width: 114, height: 114)
                                 } else {
                                     ZStack {
+                                        // 1: 배경색
+                                        Rectangle()
+                                            .fill(
+                                                (calculatedCellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && calculatedCellIndex != 4)
+                                                ? Color(hex: "f5f5f5")
+                                                : Color.white
+                                            )
+                                            .frame(width: 114, height: 114)
+                                        
+                                        // 2: 완료 시 도장
+                                        if let markedCell = board.findCell(gridIndex: gridIndex, cellIndex: calculatedCellIndex),
+                                           markedCell.progress == .completed {
+                                            VStack {
+                                                RandomCatPawStamp(opacity: 0.2, padding: 15, isBig: true)
+                                            }
+                                            .frame(width: 114, height: 114)
+                                        }
+                                        
+                                        // 3: 컨텐츠 버튼 (가장 위에!)
                                         Button {
                                             selectedCell = CellIdentifier(gridIndex: gridIndex, cellIndex: calculatedCellIndex)
                                         } label: {
@@ -66,34 +85,27 @@ struct GridDetailView: View {
                                                     Text("\(cell.title)")
                                                         .font(.pretendardSemiBold17)
                                                         .foregroundColor(.black)
-                                                    
                                                 }
                                                 .padding()
                                                 .frame(width: 114, height: 114)
-                                                .background((calculatedCellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && calculatedCellIndex != 4) ? Color(hex: "f5f5f5") : Color.white)
                                             } else {
                                                 Text("")
                                                     .frame(width: 114, height: 114)
                                                     .multilineTextAlignment(.center)
-                                                    .background((calculatedCellIndex == 4 && gridIndex != 4) || (gridIndex == 4 && calculatedCellIndex != 4) ? Color(hex: "f5f5f5") : Color.white)
                                             }
-                                            
                                         }
-                                        .sheet(item: $selectedCell) { CellIdentifier in
-                                            EditGoalView(board: board, gridIndex: CellIdentifier.gridIndex, cellIndex: CellIdentifier.cellIndex)
-                                                .presentationDetents([.large])
-                                                .presentationCornerRadius(21)
-                                                .presentationDragIndicator(.visible)
-                                        }
-                                        if let markedCell = board.findCell(gridIndex: gridIndex, cellIndex: calculatedCellIndex) {
-                                            if markedCell.progress == .completed {
-                                                VStack {
-                                                    RandomCatPawStamp(opacity: 0.2, padding: 15, isBig: true)
-                                                }
-                                                .frame(width: 114, height: 114)
-                                            }
+                                        .sheet(item: $selectedCell) { cellID in
+                                            EditGoalView(
+                                                board: board,
+                                                gridIndex: cellID.gridIndex,
+                                                cellIndex: cellID.cellIndex
+                                            )
+                                            .presentationDetents([.large])
+                                            .presentationCornerRadius(21)
+                                            .presentationDragIndicator(.visible)
                                         }
                                     }
+                                    
                                     
                                 }
                                 
