@@ -29,14 +29,8 @@ struct EditGoalView: View {
     
     
     var body: some View {
-        ZStack {
+        VStack {
             // 배경색 설정
-            
-            Color(hex: "f5f5f5").ignoresSafeArea()
-                .onTapGesture {
-                    isFocused = false // 포커스 해제하여 키보드 내림
-                }
-            
             if let cell = board.findCell(gridIndex: gridIndex, cellIndex: cellIndex) {
                 VStack (spacing: 20) {
                     Spacer()
@@ -77,13 +71,11 @@ struct EditGoalView: View {
                         .font(.pretendardBold15)
                         .frame(height: 30)
                         Divider()
-                        
-                        
                         HStack {
                             Text("Mini goal")
                             Spacer()
                                 .frame(width: 10)
-                            TextField("디자인한테 달려가기", text: $miniGoal)
+                            TextField("메인 목표를 이루기 위한 세부 목표 세우기", text: $miniGoal)
                                 .focused($isFocused)
                                 .font(.pretendardRegular14)
                         }
@@ -91,7 +83,9 @@ struct EditGoalView: View {
                         .frame(height: 30)
                         
                     }
+                    .padding(.vertical)
                     .modifier(WhiteBox(paddingValue: 15, height: 90))
+                    
                     
                     
                     VStack {
@@ -206,6 +200,11 @@ struct EditGoalView: View {
                     .foregroundColor(.red)
             }
             
+        }
+        .safeAreaPadding(.top)
+        .background(Color(hex: "f5f5f5")) // 배경색 지정
+        .onTapGesture {
+            isFocused = false // 포커스 해제하여 키보드 내림
         }
 
     }

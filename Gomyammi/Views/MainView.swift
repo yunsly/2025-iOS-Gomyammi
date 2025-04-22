@@ -8,12 +8,13 @@
 import SwiftUI
 import SwiftData
 
+
 struct MainView: View {
     @Query private var boards: [MandalartBoard]
     @State private var activeBoard: MandalartBoard?
     
     // mainGoal 수정모드
-    @State private var isEditing = false
+    @FocusState private var isEditing: Bool
     @State private var editedGoal = ""
     
     // 통계 데이터를 위한 상태 변수들
@@ -25,21 +26,17 @@ struct MainView: View {
     
     var body: some View {
         NavigationStack {
-            
-            ZStack {
-                // 배경색 설정
-                Color(hex: "f5f5f5").ignoresSafeArea()
-                
-                VStack {
-                    // 메인목표 바
-                    HStack(spacing: 10) {
-                        Image("cat-paw5")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 26)
-                        if let board = activeBoard {
-                            if isEditing {
-                                TextField("", text: $editedGoal)
+            VStack {
+                ScrollView {
+                    VStack {
+                        // 메인목표 바
+                        HStack(spacing: 10) {
+                            Image("cat-paw5")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 26)
+                            if let board = activeBoard {
+                                TextField("메인 목표를 입력하세요", text: $editedGoal)
                                     .onAppear {
                                         editedGoal = board.mainGoal
                                     }
@@ -47,71 +44,94 @@ struct MainView: View {
                                         board.mainGoal = editedGoal
                                         isEditing = false
                                     }
-                            } else {
-                                Text("\(board.mainGoal)")
-                                    .onTapGesture {
-                                        isEditing = true
-                                    }
+                                    .focused($isEditing)
+                            }
+                            Spacer()
+                            Button {
+                                // 메인골 변경가능하게
+                                isEditing = true
+                            } label: {
+                                Image(systemName: "pencil")
+                                    .font(.system(size: 20))
+                                    .foregroundColor(Color(hex: "7B7B7B"))
                             }
                         }
-                    }
-                    .modifier(WhiteBox(paddingValue: 15, height: 40))
-                    
-                    
-                    
-                    MandalartView(board: activeBoard ?? MandalartBoard(mainGoal: "load Error"))
-                    
-                    // 통계 바
-                    ZStack(alignment: .bottom) {
-                        // 배경이 되는 흰색 상자
-                        VStack (spacing: 15) {
-                            Text("포기는 배추셀 때나 하는 말이다냥")
-                                .font(.pretendardSemiBold18)
-                                .padding(.bottom, 15)
-                            
-                            // 통계 정보들 (컴포넌트 재사용)
-                            HStack(spacing: 15) {
-                                StatisticCardView(title: "전체", value: totalCells, textColor: "7B7B7B")
-                                StatisticCardView(title: "예정", value: plannedCells, textColor: "7B7B7B")
-                                StatisticCardView(title: "진행 중", value: inProgressCells, textColor: "7CA1F8")
+                        .frame(height: 40)
+                        .modifier(WhiteBox(paddingValue: 15, height: 40))
+                        
+                        MandalartView(board: activeBoard ?? MandalartBoard(mainGoal: "load Error"))
+                        
+                        // 통계 바
+                        ZStack(alignment: .bottom) {
+                            // 배경이 되는 흰색 상자
+                            VStack (spacing: 15) {
+                                Text("포기는 배추셀 때나 하는 말이다냥")
+                                    .font(.pretendardSemiBold18)
+                                    .padding(.bottom, 15)
+                                
+                                // 통계 정보들 (컴포넌트 재사용)
+                                HStack(spacing: 15) {
+                                    StatisticCardView(title: "전체", value: totalCells, textColor: "7B7B7B")
+                                    StatisticCardView(title: "예정", value: plannedCells, textColor: "7B7B7B")
+                                    StatisticCardView(title: "진행 중", value: inProgressCells, textColor: "7CA1F8")
+                                }
+                                
+                                HStack(spacing: 15) {
+                                    StatisticCardView(title: "임시", value: 0, textColor: "7CA1F8")
+                                        .hidden()
+                                    StatisticCardView(title: "일시정지", value: pausedCells, textColor: "F2A46F")
+                                    StatisticCardView(title: "완료", value: completedCells, textColor: "F78080")
+                                }
                             }
-                            //.padding(.bottom, 40) // 고양이가 들어갈 공간 확보
+                            .padding(.horizontal, 20)
+                            .frame(maxWidth: .infinity, minHeight: 270)
                             
-                            HStack(spacing: 15) {
-                                StatisticCardView(title: "임시", value: 0, textColor: "7CA1F8")
-                                    .hidden()
-                                StatisticCardView(title: "일시정지", value: pausedCells, textColor: "F2A46F")
-                                StatisticCardView(title: "완료", value: completedCells, textColor: "F78080")
-                            }
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .foregroundColor(.white)
+                            )
+                            
+                            // 고양이 이미지를 상자 하단에 걸쳐서 배치
+                            Image("running-cat")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 120)
+                                .offset(x: -100, y: 40) // 왼쪽으로도 이동
                         }
                         .padding(.horizontal, 20)
-                        .frame(maxWidth: .infinity, minHeight: 270)
-                        
-                        .background(
-                            RoundedRectangle(cornerRadius: 10)
-                                .foregroundColor(.white)
-                        )
-                        
-                        // 고양이 이미지를 상자 하단에 걸쳐서 배치
-                        Image("running-cat")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 120)
-                            .offset(x: -100, y: 40) // 왼쪽으로도 이동
+                        .padding(.bottom, 40)
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 40)
-                    
                 }
-                .onAppear {
-                    loadActiveBoard()
+                .scrollDismissesKeyboard(.immediately) // 스크롤하면 키보드가 바로 사라짐
+                .contentShape(Rectangle()) // 빈 공간 탭 감지를 위해
+                .onTapGesture {
+                    // 화면의 아무 곳이나 탭하면 키보드 내림
+                    if isEditing {
+                        isEditing = false
+                    }
                 }
-                .onChange(of: activeBoard) { _, _ in
-                    updateStatistics()
+                .scrollDisabled(true)
+            }
+            .safeAreaPadding(.top)
+            .background(Color(hex: "f5f5f5")) // 배경색 지정
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("완료") {
+                        if let board = activeBoard {
+                            board.mainGoal = editedGoal
+                        }
+                        isEditing = false
+                    }
                 }
             }
         }
-        
+        .onAppear {
+            loadActiveBoard()
+        }
+        .onChange(of: activeBoard) { _, _ in
+            updateStatistics()
+        }
     }
     
     // 전체 셀 개수와 각 상태별 개수를 계산하는 함수
@@ -170,4 +190,3 @@ struct MainView: View {
         updateStatistics()
     }
 }
-

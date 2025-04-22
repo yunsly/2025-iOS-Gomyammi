@@ -22,10 +22,7 @@ struct GridDetailView: View {
     @Environment(\.modelContext) private var modelContext
     
     var body: some View {
-        ZStack {
-            // 배경색 설정
-            Color(hex: "f5f5f5").ignoresSafeArea()
-            
+        VStack {
             VStack (spacing: 30){
                 HStack (spacing: 15) {
                     // 메인목표 바
@@ -127,6 +124,7 @@ struct GridDetailView: View {
             
             
         }
-        .background(Color.black)
+        .safeAreaPadding(.top)
+        .background(Color(hex: "f5f5f5")) // 배경색 지정
     }
 }

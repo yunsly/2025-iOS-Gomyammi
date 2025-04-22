@@ -13,9 +13,7 @@ struct OnboardingContainerView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                // 배경색 설정
-                Color(hex: "f5f5f5").ignoresSafeArea()
+            VStack {
                 
                 // 현재 페이지에 따라 적절한 온보딩 뷰 표시
                 Group {
@@ -57,6 +55,8 @@ struct OnboardingContainerView: View {
                     }
                 }
             }
+            .safeAreaPadding(.top)
+            .background(Color(hex: "f5f5f5")) // 배경색 지정
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .toolbar {
