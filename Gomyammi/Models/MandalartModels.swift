@@ -10,13 +10,15 @@ import SwiftData
 
 @Model
 class MandalartBoard {
+    var boardID: UUID
     var mainGoal: String
-    
+
     // 보드 - 셀 간의 관계 설정 (보드가 삭제되면 자식셀들도 삭제)
     @Relationship(deleteRule: .cascade)
     var cells: [MandalartCell]
     
-    init(mainGoal: String) {
+    init(boardID: UUID = UUID(), mainGoal: String) {
+        self.boardID = boardID
         self.mainGoal = mainGoal
         self.cells = []
     }

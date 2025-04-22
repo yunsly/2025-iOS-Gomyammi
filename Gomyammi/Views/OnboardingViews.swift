@@ -283,7 +283,7 @@ struct OnboardingPage5: View {
         
         modelContext.insert(newBoard)
         
-        // UserDefaults에 현재 활성 보드의 제목 저장
-        UserDefaults.standard.set(mainGoal, forKey: "myNewMandalartBoard")
+        // UserDefaults에 현재 활성 보드의 boardID 저장
+        UserDefaults.standard.set(newBoard.boardID.uuidString, forKey: "myNewMandalartBoardID")
     }
 }

@@ -159,9 +159,9 @@ struct MainView: View {
     
     private func loadActiveBoard() {
         // UserDefaults에서 보드 정보 불러오기
-        if let mainGoal = UserDefaults.standard.string(forKey: "myNewMandalartBoard") {
+        if let activeBoardID = UserDefaults.standard.string(forKey: "myNewMandalartBoardID") {
             // 제목으로 보드 찾기
-            activeBoard = boards.first(where: { $0.mainGoal == mainGoal })
+            activeBoard = boards.first(where: { $0.boardID.uuidString == activeBoardID })
         } else if let firstBoard = boards.first {
             activeBoard = firstBoard
         }
