@@ -31,7 +31,7 @@ struct BasicButton: ViewModifier {
         HStack {
             Spacer()
             content
-                .frame(maxWidth: buttonWidth, maxHeight: 48, alignment: .leading)
+                .frame(maxWidth: buttonWidth, maxHeight: 52, alignment: .leading)
                 .background(Color(hex: buttonColor))
                 .cornerRadius(15)
                 .padding(.horizontal)

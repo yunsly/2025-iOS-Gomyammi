@@ -18,7 +18,13 @@ struct GridDetailView: View {
     @State private var showingEditGoalView: Bool = false
     @State private var selectedCell: CellIdentifier? = nil
     @State private var markedCell: MandalartCell?
+    @State private var showDeleteAlert = false
     
+    
+    @State private var itemToDelete: MandalartCell?
+    
+    
+    @State private var feedbackTrigger = false
     @Environment(\.modelContext) private var modelContext
     
     var body: some View {
@@ -76,6 +82,7 @@ struct GridDetailView: View {
                                         // 3: 컨텐츠 버튼 (가장 위에!)
                                         Button {
                                             selectedCell = CellIdentifier(gridIndex: gridIndex, cellIndex: calculatedCellIndex)
+                                            
                                         } label: {
                                             if let cell = board.findCell(gridIndex: gridIndex, cellIndex: calculatedCellIndex) {
                                                 VStack {
@@ -104,6 +111,45 @@ struct GridDetailView: View {
                                             .presentationCornerRadius(21)
                                             .presentationDragIndicator(.visible)
                                         }
+                                        .simultaneousGesture(
+                                            LongPressGesture(minimumDuration: 0.2)
+                                                .onEnded { _ in
+                                                    print("Long press detected with simultaneousGesture!")
+                                                    itemToDelete = board.findCell(gridIndex: gridIndex, cellIndex: calculatedCellIndex)
+                                                    if let cell = itemToDelete {
+                                                        print("목표 삭제: \(cell.title)")
+                                                    }
+                                                    showDeleteAlert = true
+                                                    
+                                                    // 햅틱 피드백 트리거
+                                                    feedbackTrigger.toggle()
+                                                }
+                                        )
+                                        .sensoryFeedback(.impact(weight: .medium), trigger: feedbackTrigger)
+                                        .alert("이 목표를 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
+                                            Button("삭제", role: .destructive) {
+                                                if let cell = itemToDelete {
+                                                    print("목표 삭제: \(cell.title)")
+                                                    cell.changeCellData(emoji: "", miniGoal: "", memo: "", progress: .planned, completionDate: "")
+                                                    
+                                                    // 하위 셀도 함께 삭제
+                                                    if cell.cellIndex == 4 {
+                                                        for i in 0..<9 where i != 4 {
+                                                            if let childCell = board.findCell(gridIndex: cell.gridIndex, cellIndex: i) {
+                                                                childCell.changeCellData(emoji: "", miniGoal: "", memo: "", progress: .planned, completionDate: "")
+                                                            }
+                                                        }
+                                                    }
+                                                            
+                                                    
+                                                    try? modelContext.save()
+                                                }
+                                            }
+                                            Button("취소", role: .cancel) { }
+                                        } message: {
+                                            Text("하위 목표도 함께 삭제됩니다.")
+                                        }
+                                        
                                     }
                                     
                                     
@@ -113,12 +159,14 @@ struct GridDetailView: View {
                         }
                     }
                     
+                    
                 }
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
                         .stroke(Color.white, lineWidth: 4)
                 )
                 .cornerRadius(10)
+                
                 
                 Spacer()
                 

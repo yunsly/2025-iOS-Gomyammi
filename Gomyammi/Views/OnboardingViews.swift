@@ -270,15 +270,14 @@ struct OnboardingPage5: View {
             
             let mainCell = MandalartCell(emoji: "", title: "", hasSubcells: true, gridIndex: 4, cellIndex: i)
             newBoard.cells.append(mainCell)
-            
+        
             // 서브셀 생성 및 관계 설정 (중앙 제외)
             for j in 0..<9 where i != 4 {
-                print("\(j)되나?")
-                let subCell = MandalartCell(emoji: "", title: "", hasSubcells: false, gridIndex: i, cellIndex: j)
-                subCell.parentCell = mainCell  // 부모-자식 관계 설정
-                mainCell.subcells.append(subCell)
+                    let subCell = MandalartCell(emoji: "", title: "", hasSubcells: false, gridIndex: i, cellIndex: j)
+                    subCell.parentCell = mainCell  // 부모-자식 관계 설정
+                    mainCell.subcells.append(subCell)
+                
             }
-            
         }
         
         modelContext.insert(newBoard)

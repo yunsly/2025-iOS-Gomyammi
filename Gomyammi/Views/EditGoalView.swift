@@ -22,6 +22,8 @@ struct EditGoalView: View {
     @State private var selectedStatus: TaskStatus? = .planned
     @State private var completionDate: String = ""
     @State private var hasToChangeCell: MandalartCell?
+    @State private var isEditMode: Bool = false
+    @State private var showDeleteAlert: Bool = false
     
     @FocusState private var isFocused: Bool
     @Environment(\.dismiss) private var dismiss
@@ -48,7 +50,8 @@ struct EditGoalView: View {
                             Spacer()
                                 .frame(width: 35)
                             
-                            TextField("", text: $emoji)
+                            TextField("이모지만 입력 가능합니다", text: $emoji)
+                                .font(.pretendardRegular14)
                                 .focused($isFocused)
                                 .onChange(of: emoji) { oldValue, newValue in
                                     // 입력된 텍스트가 비어있지 않은 경우
@@ -135,30 +138,7 @@ struct EditGoalView: View {
                     Button {
                         // 명시적으로 cell 찾기
                         if let updatedCell = board.findCell(gridIndex: gridIndex, cellIndex: cellIndex) {
-                            updatedCell.emoji = emoji
-                            updatedCell.title = miniGoal
-                            updatedCell.memo = memo
-                            updatedCell.progress = selectedStatus ?? .planned
-                            updatedCell.completionDate = completionDate
-                            
-                            // 메인셀 변경 시 쌍방 바인딩
-                            if gridIndex == 4 {
-                                if let hasToChangeCell = board.findCell(gridIndex: cellIndex, cellIndex: 4) {
-                                    hasToChangeCell.emoji = emoji
-                                    hasToChangeCell.title = miniGoal
-                                    hasToChangeCell.memo = memo
-                                    hasToChangeCell.progress = selectedStatus ?? .planned
-                                    hasToChangeCell.completionDate = completionDate
-                                }
-                            } else if cellIndex == 4 {
-                                if let hasToChangeCell = board.findCell(gridIndex: 4, cellIndex: gridIndex) {
-                                    hasToChangeCell.emoji = emoji
-                                    hasToChangeCell.title = miniGoal
-                                    hasToChangeCell.memo = memo
-                                    hasToChangeCell.progress = selectedStatus ?? .planned
-                                    hasToChangeCell.completionDate = completionDate
-                                }
-                            }
+                            updatedCell.changeCellData(emoji: emoji, miniGoal: miniGoal, memo: memo, progress: selectedStatus ?? .planned, completionDate: completionDate)
                             // 변경 알림
                             try? modelContext.save()
                         }
@@ -168,30 +148,66 @@ struct EditGoalView: View {
                     } label: {
                         HStack {
                             Spacer()
-                            Text("작성")
-                                .font(.pretendardMedium18)
+                            Text(isEditMode ? "수정하기" : "작성하기")
+                                .font(.pretendardBold20)
                                 .foregroundColor(.white)
+                            Spacer()
+                                .frame(width: 8)
                             Image("cat-paw5")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 28)
+                                .frame(width: 24)
                                 .colorInvert()
+
+                                
                             Spacer()
                         }
                     }
-                    .modifier(BasicButton(buttonColor: emoji.isEmpty || miniGoal.isEmpty ? "D1D1D1":"444343", buttonWidth: 246))
+                    .modifier(BasicButton(buttonColor: emoji.isEmpty || miniGoal.isEmpty ? "D1D1D1":"444343", buttonWidth: 260))
                     .disabled(emoji.isEmpty || miniGoal.isEmpty)
+                    
+                    Text("삭제하기")
+                        .foregroundColor(.red)
+                        .font(.pretendardRegular14)
+                        .onTapGesture {
+                            showDeleteAlert = true
+                        }
                     
                     Spacer()
                         .frame(height: 20)
                 }
                 .ignoresSafeArea(.keyboard)
                 .onAppear {
-                    emoji = cell.emoji
-                    miniGoal = cell.title
-                    memo = cell.memo ?? ""
-                    completionDate = cell.completionDate ?? ""
-                    selectedStatus = cell.progress
+                    // 기존의 데이터가 있다면
+                    if cell.emoji != "" {
+                        emoji = cell.emoji
+                        miniGoal = cell.title
+                        memo = cell.memo ?? ""
+                        completionDate = cell.completionDate ?? ""
+                        selectedStatus = cell.progress
+                        isEditMode = true
+                    }
+                }
+                .alert("이 목표를 삭제하시겠습니까?", isPresented: $showDeleteAlert) {
+                    Button("삭제", role: .destructive) {
+                        
+                        print("목표 삭제: \(cell.title)")
+                        cell.changeCellData(emoji: "", miniGoal: "", memo: "", progress: .planned, completionDate: "")
+                        
+                        // 하위 셀도 함께 삭제
+                        if cell.cellIndex == 4 {
+                            for i in 0..<9 where i != 4 {
+                                if let childCell = board.findCell(gridIndex: cell.gridIndex, cellIndex: i) {
+                                    childCell.changeCellData(emoji: "", miniGoal: "", memo: "", progress: .planned, completionDate: "")
+                                }
+                            }
+                        }
+                        dismiss()
+                        try? modelContext.save()
+                    }
+                    Button("취소", role: .cancel) { }
+                } message: {
+                    Text("하위 목표도 함께 삭제됩니다.")
                 }
                 
             } else {
@@ -200,15 +216,16 @@ struct EditGoalView: View {
                     .foregroundColor(.red)
             }
             
+            
         }
         .safeAreaPadding(.top)
         .background(Color(hex: "f5f5f5")) // 배경색 지정
         .onTapGesture {
             isFocused = false // 포커스 해제하여 키보드 내림
         }
-
+        
     }
-        
-        
-}
     
+    
+}
+
